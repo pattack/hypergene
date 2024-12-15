@@ -1,0 +1,37 @@
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/janstoon/toolbox/kareless"
+	"github.com/janstoon/toolbox/kareless/std"
+
+	"github.com/pouyanh/kaptah/{{ .Name }}"
+	"github.com/pouyanh/kaptah/{{ .Name }}/bridge"
+	"github.com/pouyanh/kaptah/{{ .Name }}/config"
+)
+
+func main() {
+	k := kareless.Compile({{ .Name }}.ServiceOptions()...).
+		Feed(std.LocalEarlyLoadedSettingSource("server", "/etc/kaptah")).
+		Feed(settings.Default).
+		Equip({{ .Name }}.Infrastructure).
+		Equip(bridge.Instruments...).
+		AfterStart(welcome)
+	if err := k.Run(context.Background()); err != nil {
+		panic(err)
+	}
+}
+
+func welcome(
+	ctx context.Context, ss *kareless.Settings, ib *kareless.InstrumentBank, apps []kareless.Application,
+) error {
+	fmt.Printf("Operation Mode: %s\n", settings.OperationMode(ss))
+	fmt.Printf("Active apps: %v\n", tricks.Map(apps, func(src kareless.Application) string {
+		return fmt.Sprintf("%T", src)
+	}))
+	config.PrintVars()
+
+	return nil
+}

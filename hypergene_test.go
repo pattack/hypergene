@@ -36,7 +36,7 @@ func TestExport(t *testing.T) {
 		[]byte(`package main
 
 func main() {
-  println("Hello {{ .v.map.Title }}")
+  println("Hello World!")
 }
 `),
 		0o700,
